@@ -11,8 +11,8 @@
   <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
 </head>
 <body>
-  <!-- The video. -->
-  <cast-media-player id="player"></cast-media-player>
+  <!-- Raw video element: prevents CAF from injecting its default UI. -->
+  <video id="player" class="castMediaElement" playsinline></video>
 
   <!-- Nothing playing: the Firup logo. -->
   <main id="idle" class="stage">
@@ -36,13 +36,37 @@
     </div>
   </section>
 
-  <!-- Paused: what is playing. -->
+  <!-- Paused / Control Panel: what is playing + custom Firup scrubber. -->
   <section id="paused" class="info" hidden>
     <img id="paused-poster" class="poster small" alt="">
-    <div class="titles">
-      <p class="kicker">Paused</p>
-      <h2 class="title"></h2>
-      <p class="subtitle"></p>
+    <div class="panel-body">
+      <div class="titles">
+        <div class="kicker-row">
+          <span class="state-badge" aria-hidden="true">
+            <svg id="icon-pause" viewBox="0 0 24 24">
+              <rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor" />
+              <rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor" />
+            </svg>
+            <svg id="icon-play" viewBox="0 0 24 24" hidden>
+              <path d="M8 5.5v13l11-6.5z" fill="currentColor" />
+            </svg>
+          </span>
+          <p id="hud-kicker" class="kicker">Paused</p>
+        </div>
+        <h2 class="title"></h2>
+        <p class="subtitle"></p>
+      </div>
+
+      <div class="controls">
+        <div class="progress-track">
+          <div id="progress-buffered" class="progress-buffered"></div>
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <div class="time-row">
+          <span id="time-current">0:00</span>
+          <span id="time-total">0:00</span>
+        </div>
+      </div>
     </div>
   </section>
 
