@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Firup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/receiver.css">
+  <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+</head>
+<body>
+  <!-- The video. -->
+  <cast-media-player id="player"></cast-media-player>
+
+  <!-- Nothing playing: the Firup logo. -->
+  <main id="idle" class="stage">
+    <svg class="logo" viewBox="65 30 80 100" aria-hidden="true">
+      <path d="M65 30h40l40 50h-40z" fill="#ff9800" />
+      <path d="M65 130h40l40-50h-40z" fill="#f44336" />
+    </svg>
+    <h1 class="brand">Firup</h1>
+    <p class="hint">Cast something from your phone to watch it here.</p>
+  </main>
+
+  <!-- Loading or buffering: the title, and the striped line. -->
+  <section id="loading" class="stage veil" hidden>
+    <img id="loading-poster" class="poster" alt="">
+    <div class="titles">
+      <p class="kicker">Firup</p>
+      <h2 class="title"></h2>
+      <p class="subtitle"></p>
+      <div class="stage-line"><span></span></div>
+      <p class="status">Loading…</p>
+    </div>
+  </section>
+
+  <!-- Paused: what is playing. -->
+  <section id="paused" class="info" hidden>
+    <img id="paused-poster" class="poster small" alt="">
+    <div class="titles">
+      <p class="kicker">Paused</p>
+      <h2 class="title"></h2>
+      <p class="subtitle"></p>
+    </div>
+  </section>
+
+  <!-- Something went wrong. -->
+  <section id="failed" class="stage veil" hidden>
+    <svg class="logo small" viewBox="65 30 80 100" aria-hidden="true">
+      <path d="M65 30h40l40 50h-40z" fill="#ff9800" />
+      <path d="M65 130h40l40-50h-40z" fill="#f44336" />
+    </svg>
+    <h2 class="title">This stream couldn’t be played</h2>
+    <p class="status">Pick another stream on your phone.</p>
+  </section>
+
+  <script src="js/receiver.js"></script>
+</body>
+</html>

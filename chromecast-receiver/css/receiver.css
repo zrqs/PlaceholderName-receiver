@@ -1,0 +1,163 @@
+/* Firup Cast receiver: the apps' look on the TV. Dark #1f1f1f, orange #ff9800, Manrope headings. */
+:root {
+  --bg: #1f1f1f;
+  --text: #f4f4f4;
+  --soft: #cfcfcf;
+  --muted: #9a9a9a;
+  --accent: #ff9800;
+  --red: #f44336;
+  --font-display: 'Manrope', 'DM Sans', system-ui, sans-serif;
+  --font-text: 'DM Sans', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-text);
+}
+
+[hidden] { display: none !important; }
+
+/* The video and the framework's own player: no logo, no splash, an orange progress bar. */
+cast-media-player {
+  position: absolute;
+  inset: 0;
+  --splash-image: none;
+  --playback-logo-image: none;
+  --progress-color: var(--accent);
+  --buffering-indicator-color: transparent;
+  --background-color: #000;
+  --font-family: var(--font-text);
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6vh 6vw;
+}
+
+.stage.veil { background: rgba(31, 31, 31, .92); }
+
+.logo { width: 11vh; height: 14vh; }
+.logo.small { width: 8vh; height: 10vh; margin-bottom: 3vh; }
+
+.brand {
+  margin: 2vh 0 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 7vh;
+  letter-spacing: -.02em;
+}
+
+.hint, .status {
+  margin: 1.6vh 0 0;
+  color: var(--muted);
+  font-size: 2.6vh;
+}
+
+.kicker {
+  margin: 0 0 1vh;
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2.2vh;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 6vh;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+}
+
+.subtitle {
+  margin: 1.2vh 0 0;
+  color: var(--soft);
+  font-size: 3vh;
+}
+
+.poster {
+  width: 26vh;
+  height: 39vh;
+  object-fit: cover;
+  border-radius: 1vh;
+  background: #2b2b2b;
+  box-shadow: 0 2vh 6vh rgba(0, 0, 0, .5);
+}
+.poster.small { width: 16vh; height: 24vh; }
+.poster:not([src]), .poster[src=""] { display: none; }
+
+/* Loading: the poster beside the titles. */
+#loading { flex-direction: row; gap: 5vw; text-align: left; }
+#loading .titles { max-width: 52vw; }
+
+/* Paused: bottom-left, over the video, under a shade. */
+.info {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 3vw;
+  padding: 18vh 5vw 12vh;
+  background: linear-gradient(to top, rgba(31, 31, 31, .95), rgba(31, 31, 31, .7) 60%, transparent);
+  animation: fade-in .25s ease-out;
+}
+.info .title { font-size: 5vh; }
+.info .titles { max-width: 70vw; }
+
+/* Firup's loading line: skewed orange-and-red blocks crossing a faint track. */
+.stage-line {
+  position: relative;
+  width: min(36vw, 560px);
+  height: .9vh;
+  min-height: 6px;
+  margin-top: 4vh;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, .15);
+  overflow: hidden;
+}
+
+.stage-line span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 34%;
+  background: linear-gradient(90deg,
+    var(--accent) 0%, var(--accent) 48%,
+    transparent 48%, transparent 52%,
+    var(--red) 52%, var(--red) 100%);
+  transform: skewX(-35deg);
+  animation: stage-sweep 1.4s cubic-bezier(.4, 0, .2, 1) infinite;
+}
+
+@keyframes stage-sweep {
+  from { left: -38%; }
+  to { left: 104%; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-line span { animation: none; left: 33%; opacity: .85; }
+  .info { animation: none; }
+}
