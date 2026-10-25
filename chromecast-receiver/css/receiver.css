@@ -24,30 +24,31 @@ html, body {
 
 [hidden] { display: none !important; }
 
-/* The video and the framework's own player: no logo, no splash, an orange progress bar. */
-cast-media-player {
+/* Raw video element filling the screen underneath custom overlays. */
+#player {
   position: absolute;
   inset: 0;
-  --splash-image: none;
-  --playback-logo-image: none;
-  --progress-color: var(--accent);
-  --buffering-indicator-color: transparent;
-  --background-color: #000;
-  --font-family: var(--font-text);
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+  z-index: 1;
 }
 
 .stage {
   position: absolute;
   inset: 0;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
   padding: 6vh 6vw;
+  background: var(--bg);
 }
 
-.stage.veil { background: rgba(31, 31, 31, .92); }
+.stage.veil { background: rgba(31, 31, 31, .94); }
 
 .logo { width: 11vh; height: 14vh; }
 .logo.small { width: 8vh; height: 10vh; margin-bottom: 3vh; }
@@ -95,32 +96,150 @@ cast-media-player {
   width: 26vh;
   height: 39vh;
   object-fit: cover;
-  border-radius: 1vh;
+  border-radius: 1.2vh;
   background: #2b2b2b;
-  box-shadow: 0 2vh 6vh rgba(0, 0, 0, .5);
+  box-shadow: 0 2vh 6vh rgba(0, 0, 0, .55);
+  flex-shrink: 0;
 }
-.poster.small { width: 16vh; height: 24vh; }
+.poster.small { width: 18vh; height: 27vh; }
 .poster:not([src]), .poster[src=""] { display: none; }
 
 /* Loading: the poster beside the titles. */
 #loading { flex-direction: row; gap: 5vw; text-align: left; }
 #loading .titles { max-width: 52vw; }
 
-/* Paused: bottom-left, over the video, under a shade. */
+/* Paused / Custom Control Panel: bottom overlay with Firup scrubber. */
 .info {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 10;
   display: flex;
   align-items: flex-end;
-  gap: 3vw;
-  padding: 18vh 5vw 12vh;
-  background: linear-gradient(to top, rgba(31, 31, 31, .95), rgba(31, 31, 31, .7) 60%, transparent);
-  animation: fade-in .25s ease-out;
+  gap: 3.5vw;
+  padding: 22vh 5vw 7vh;
+  background: linear-gradient(
+    to top,
+    rgba(18, 18, 18, .98) 0%,
+    rgba(24, 24, 24, .88) 55%,
+    rgba(31, 31, 31, .4) 80%,
+    transparent 100%
+  );
+  animation: fade-in .22s ease-out;
 }
-.info .title { font-size: 5vh; }
-.info .titles { max-width: 70vw; }
+
+.panel-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3.2vh;
+}
+
+.kicker-row {
+  display: flex;
+  align-items: center;
+  gap: 1.2vh;
+  margin-bottom: 1.2vh;
+}
+
+.kicker-row .kicker { margin: 0; }
+
+.state-badge {
+  width: 4.2vh;
+  height: 4.2vh;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #141414;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 .6vh 2vh rgba(255, 152, 0, .35);
+}
+
+.state-badge svg {
+  width: 2.4vh;
+  height: 2.4vh;
+}
+
+.info .title {
+  font-size: 5vh;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.info .subtitle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Scrubber & timestamps inside the custom control panel. */
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4vh;
+  width: 100%;
+}
+
+.progress-track {
+  position: relative;
+  width: 100%;
+  height: 1vh;
+  min-height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .16);
+}
+
+.progress-buffered {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .28);
+  transition: width .2s linear;
+}
+
+.progress-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0%;
+  background: var(--accent);
+  transition: width .15s linear;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  right: -1vh;
+  top: 50%;
+  width: 2.2vh;
+  height: 2.2vh;
+  border-radius: 50%;
+  background: var(--accent);
+  border: .35vh solid var(--text);
+  transform: translateY(-50%);
+  box-shadow: 0 .2vh 1.2vh rgba(0, 0, 0, .6);
+}
+
+.time-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2.3vh;
+  font-variant-numeric: tabular-nums;
+  color: var(--soft);
+}
+
+#time-total { color: var(--muted); }
 
 /* Firup's loading line: skewed orange-and-red blocks crossing a faint track. */
 .stage-line {
@@ -153,8 +272,8 @@ cast-media-player {
 }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(1.5vh); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
